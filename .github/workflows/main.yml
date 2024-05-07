@@ -11,20 +11,11 @@
       name: PR Replication
       runs-on: ubuntu-latest
       steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-          with:
-            ref: ${{ github.event.pull_request.head.sha }}
-            repository: ${{ github.event.pull_request.head.repo.full_name }}
-            token: ${{ secrets.GITHUB_TOKEN }}
-
         - name: Push code from integration to integration-ecs branch
           run: |
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git config --global user.name "github-actions[bot]"
-            git checkout -b integration-ecs
-            git add *
+            git checkout origin/integration-ecs
+            git merge origin/integration
             git commit -m "Replicating PR from integration to integration-ecs"
             git push origin integration-ecs
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
